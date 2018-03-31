@@ -2,6 +2,7 @@ package cn.droidlover.xdroidmvp.net;
 
 import android.content.Context;
 
+import cn.droidlover.xdroidmvp.base.ActivityCollector;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 
@@ -20,27 +21,48 @@ public class HttpObserver<T> implements Observer<T>, LoadingDialogHandler.Dialog
     private OnNextListener onNextListener;
     private OnCompleteListener onCompleteListener;
     private onErrorListener onErrorListener;
-    private Context context;
+    private boolean isShowDialog;
 
-    public HttpObserver(Context context, OnNextListener onNextListener) {
-        mProgressDialogHandler = new LoadingDialogHandler(context, this);
+    public HttpObserver(OnNextListener onNextListener) {
+        isShowDialog = true;
+        mProgressDialogHandler = new LoadingDialogHandler(ActivityCollector.getTopActivity(), this);
         this.onNextListener = onNextListener;
-        this.context = context;
     }
 
-    public HttpObserver(OnNextListener onNextListener, OnCompleteListener onCompleteListener, Context context) {
-        mProgressDialogHandler = new LoadingDialogHandler(context, this);
+    public HttpObserver(OnNextListener onNextListener, OnCompleteListener onCompleteListener) {
+        isShowDialog = true;
+        mProgressDialogHandler = new LoadingDialogHandler(ActivityCollector.getTopActivity(), this);
         this.onNextListener = onNextListener;
         this.onCompleteListener = onCompleteListener;
-        this.context = context;
     }
 
-    public HttpObserver(OnNextListener onNextListener, OnCompleteListener onCompleteListener, HttpObserver.onErrorListener onErrorListener, Context context) {
-        mProgressDialogHandler = new LoadingDialogHandler(context, this);
+    public HttpObserver(OnNextListener onNextListener, OnCompleteListener onCompleteListener, HttpObserver.onErrorListener onErrorListener) {
+        isShowDialog = true;
+        mProgressDialogHandler = new LoadingDialogHandler(ActivityCollector.getTopActivity(), this);
         this.onNextListener = onNextListener;
         this.onCompleteListener = onCompleteListener;
         this.onErrorListener = onErrorListener;
-        this.context = context;
+    }
+
+    public HttpObserver(boolean isShowDialog, OnNextListener onNextListener) {
+        this.isShowDialog = isShowDialog;
+        mProgressDialogHandler = new LoadingDialogHandler(ActivityCollector.getTopActivity(), this);
+        this.onNextListener = onNextListener;
+    }
+
+    public HttpObserver(boolean isShowDialog, OnNextListener onNextListener, OnCompleteListener onCompleteListener) {
+        this.isShowDialog = isShowDialog;
+        mProgressDialogHandler = new LoadingDialogHandler(ActivityCollector.getTopActivity(), this);
+        this.onNextListener = onNextListener;
+        this.onCompleteListener = onCompleteListener;
+    }
+
+    public HttpObserver(boolean isShowDialog, OnNextListener onNextListener, OnCompleteListener onCompleteListener, HttpObserver.onErrorListener onErrorListener) {
+        this.isShowDialog = isShowDialog;
+        mProgressDialogHandler = new LoadingDialogHandler(ActivityCollector.getTopActivity(), this);
+        this.onNextListener = onNextListener;
+        this.onCompleteListener = onCompleteListener;
+        this.onErrorListener = onErrorListener;
     }
 
     @Override
@@ -79,13 +101,13 @@ public class HttpObserver<T> implements Observer<T>, LoadingDialogHandler.Dialog
     }
 
     private void showProgressDialog() {
-        if (mProgressDialogHandler != null) {
+        if (mProgressDialogHandler != null && isShowDialog) {
             mProgressDialogHandler.obtainMessage(LoadingDialogHandler.SHOW_DIALOG).sendToTarget();
         }
     }
 
     private void dismissProgressDialog() {
-        if (mProgressDialogHandler != null) {
+        if (mProgressDialogHandler != null && isShowDialog) {
             mProgressDialogHandler.obtainMessage(LoadingDialogHandler.DISMISS_DIALOG).sendToTarget();
             mProgressDialogHandler = null;
         }

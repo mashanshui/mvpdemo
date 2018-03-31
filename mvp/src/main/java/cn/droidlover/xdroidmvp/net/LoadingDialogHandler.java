@@ -1,11 +1,13 @@
 package cn.droidlover.xdroidmvp.net;
 
 
+import android.app.Application;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Handler;
 import android.os.Message;
+import android.view.WindowManager;
 
 
 /**

@@ -5,6 +5,7 @@ import android.util.Log;
 import com.shenhe.mvpdemo.MyApplication;
 import com.shenhe.mvpdemo.net.RetrofitService;
 
+import cn.droidlover.xdroidmvp.base.ActivityCollector;
 import cn.droidlover.xdroidmvp.net.HttpObserver;
 import cn.droidlover.xdroidmvp.net.HttpRequestUtil;
 import cn.droidlover.xdroidmvp.net.RetrofitConfig;
@@ -42,7 +43,7 @@ public class LoginNetDataSource implements LoginDataSource {
         retrofitService = HttpRequestUtil.getRetrofitClient(RetrofitService.class.getName());
 
         Observable<ResponseBody> observable= retrofitService.get();
-        HttpObserver<ResponseBody> httpObserver=new HttpObserver<ResponseBody>(MyApplication.context, new HttpObserver.OnNextListener() {
+        HttpObserver<ResponseBody> httpObserver=new HttpObserver<ResponseBody>(new HttpObserver.OnNextListener() {
             @Override
             public void onNext(Object o) {
                 callBack.onSuccess(userName, passWord);
